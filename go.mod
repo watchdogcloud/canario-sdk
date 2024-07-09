@@ -3,6 +3,7 @@ module github.com/zakhaev26/canario
 go 1.22.0
 
 require (
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/tklauser/go-sysconf v0.3.14 // indirect

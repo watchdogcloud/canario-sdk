@@ -1,10 +1,14 @@
 package canario
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
+	"github.com/cenkalti/backoff/v4"
 	"github.com/zakhaev26/canario/internal/conf"
 	"github.com/zakhaev26/canario/internal/conf/parse"
 	"github.com/zakhaev26/canario/pkg/interfaces"
@@ -50,7 +54,27 @@ func (mb *MetricBatch) addMetricToBatch(incomingMetric MetricBufferUnitStructure
 
 	if len(mb.Buffer) >= BATCH_SIZE {
 		// make an api call with expo backoff..
-		mb.Buffer = nil
+		// go apiCall
+		mb.Buffer = mb.Buffer[:0]
+	}
+}
+
+func (mb *MetricBatch) sendMetrics() {
+
+	send := func() error {
+
+		var buf bytes.Buffer
+
+		_ = json.NewEncoder(&buf).Encode(mb.Buffer)
+		// Will be doing an API call to my servers
+		return nil
+	}
+
+	expBackoff := backoff.NewExponentialBackOff()
+	expBackoff.MaxElapsedTime = 1 * time.Minute
+
+	if err := backoff.Retry(send, expBackoff); err != nil {
+		log.Fatalf(err.Error()) // do some nice logging
 	}
 }
 
@@ -90,7 +114,6 @@ func (c *Canario) RunPeriodicMetrics() {
 		}
 
 		c.mb.addMetricToBatch(thisMetric)
-		fmt.Println(c.mb.Buffer)
 	}
 }
 
