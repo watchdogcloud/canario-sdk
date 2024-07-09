@@ -14,7 +14,7 @@ metrics:
     enabled: true
 
 monitoring:
-  interval_seconds: 60
+  interval_seconds: 1
   retention_hours: 24
 
 alerting:

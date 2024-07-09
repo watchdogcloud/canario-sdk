@@ -4,7 +4,6 @@ import (
 	"sync"
 )
 
-
 type Config struct {
 	Version string `yaml:"version"`
 
