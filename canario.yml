@@ -1,0 +1,38 @@
+version: 0.1.2
+
+api:
+  key: 'ey....'
+
+metrics:
+  cpu:
+    enabled: true
+  memory:
+    enabled: true
+  disk:
+    enabled: true
+  network:
+    enabled: true
+
+monitoring:
+  interval_seconds: 60
+  retention_hours: 24
+
+alerting:
+  enabled: true
+  thresholds:
+    cpu_usage_percentage:
+      warning: 80
+      critical: 90
+    memory_usage_percentage:
+      warning: 70
+      critical: 80
+    disk_usage_percentage:
+      warning: 75
+      critical: 85
+    network_traffic_threshold:
+      warning: 1000 
+      critical: 1500  
+  notification_channels:
+    emails:
+      - admin1@example.com
+      - admin2@example.com
