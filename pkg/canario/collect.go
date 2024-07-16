@@ -112,7 +112,7 @@ func (c *Canario) RunPeriodicMetrics() {
 				thisMetric.Network = netMetrics
 			}
 		}
-
+		fmt.Println(thisMetric)
 		c.mb.addMetricToBatch(thisMetric)
 	}
 }
