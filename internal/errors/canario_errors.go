@@ -15,6 +15,18 @@ type GatewayError struct {
 	Err     error
 }
 
+// according to Feathers.js v4 (terrier) backend
+type CanarioErr struct {
+	InternalErrorCode string `json:"internal_error_code"`
+	Field             string `json:"field"`
+	Description       string `json:"description"`
+	Code              string `json:"code"`
+}
+
+type CanarioErrorJSON struct {
+	ErrorData CanarioErr `json:"error"`
+}
+
 func handleError(msg string, err error) string {
 	errorMessage := ""
 	if msg != "" {
