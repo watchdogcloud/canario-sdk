@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/zakhaev26/canario/examples"
+	"github.com/watchdog/canario/examples"
 )
 
 func main() {

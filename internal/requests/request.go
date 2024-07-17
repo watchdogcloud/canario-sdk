@@ -9,8 +9,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/zakhaev26/canario/internal/constants"
-	"github.com/zakhaev26/canario/internal/errors"
+	"github.com/watchdogcloud/canario/internal/constants"
+	"github.com/watchdogcloud/canario/internal/errors"
 )
 
 type Auth struct {

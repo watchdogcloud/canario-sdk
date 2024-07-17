@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/zakhaev26/canario/internal/conf"
-	"github.com/zakhaev26/canario/internal/conf/parse"
-	"github.com/zakhaev26/canario/pkg/client"
-	"github.com/zakhaev26/canario/pkg/interfaces"
+	"github.com/watchdogcloud/canario/internal/conf"
+	"github.com/watchdogcloud/canario/internal/conf/parse"
+	"github.com/watchdogcloud/canario/pkg/client"
+	"github.com/watchdogcloud/canario/pkg/interfaces"
 )
 
 const (

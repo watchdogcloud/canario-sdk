@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/zakhaev26/canario/pkg/versioning"
+	"github.com/watchdogcloud/canario/pkg/versioning"
 	"gopkg.in/yaml.v2"
 )
 

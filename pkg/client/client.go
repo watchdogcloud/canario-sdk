@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/zakhaev26/canario/internal/conf"
-	"github.com/zakhaev26/canario/internal/requests"
-	"github.com/zakhaev26/canario/internal/resources"
-	"github.com/zakhaev26/canario/pkg/versioning"
+	"github.com/watchdogcloud/canario/internal/conf"
+	"github.com/watchdogcloud/canario/internal/requests"
+	"github.com/watchdogcloud/canario/internal/resources"
+	"github.com/watchdogcloud/canario/pkg/versioning"
 )
 
 type Client struct {

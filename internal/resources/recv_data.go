@@ -3,8 +3,8 @@ package resources
 import (
 	"fmt"
 
-	"github.com/zakhaev26/canario/internal/constants"
-	"github.com/zakhaev26/canario/internal/requests"
+	"github.com/watchdogcloud/canario/internal/constants"
+	"github.com/watchdogcloud/canario/internal/requests"
 )
 
 type RecvData struct {

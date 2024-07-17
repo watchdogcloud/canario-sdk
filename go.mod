@@ -1,4 +1,4 @@
-module github.com/zakhaev26/canario
+module github.com/watchdogcloud/canario
 
 go 1.22.0
 

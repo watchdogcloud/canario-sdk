@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/zakhaev26/canario/pkg/canario"
+	"github.com/watchdogcloud/canario/pkg/canario"
 )
 
 // example as mock server

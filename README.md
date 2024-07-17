@@ -23,7 +23,7 @@ These triggers detect gradual changes in metric values over time, indicating pot
 Current work involves making a nice console for watchdog so that the dirty configuration changes need not be done via touching the code. It's in progress and will hopefully be out soon.
 
 ```bash
-go get github.com/zakhaev26/canario
+go get github.com/watchdogcloud/canario
 ```
 
 ## Configuration File (`canario.yml`)
