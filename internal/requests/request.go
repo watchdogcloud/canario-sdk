@@ -87,6 +87,7 @@ func (request *Request) SetTimeout(timeout int16) {
 }
 
 func ProcessResponse(response *http.Response) (map[string]interface{}, error) {
+
 	//avoid mem leak in client
 	defer response.Body.Close()
 
@@ -140,5 +141,7 @@ func (request *Request) APICall(req *http.Request) (map[string]interface{}, erro
 	default:
 		return nil, &errors.BadRequestError{Message: errorData.Description}
 	}
+
+	//extracting resp in a k-v pair map
 	return ProcessResponse(resp)
 }
