@@ -1,21 +1,18 @@
 package canario
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
-	"github.com/cenkalti/backoff/v4"
 	"github.com/zakhaev26/canario/internal/conf"
 	"github.com/zakhaev26/canario/internal/conf/parse"
+	"github.com/zakhaev26/canario/pkg/client"
 	"github.com/zakhaev26/canario/pkg/interfaces"
 )
 
 const (
-	BATCH_SIZE = 128
+	BATCH_SIZE = 4
 )
 
 type Watchdog interface {
@@ -28,10 +25,10 @@ type Canario struct {
 }
 
 type MetricBufferUnitStructure struct {
-	CPU     interface{}
-	Disk    interface{}
-	Mem     interface{}
-	Network interface{}
+	CPU     interface{} `json:"cpu"`
+	Disk    interface{} `json:"disk"`
+	Mem     interface{} `json:"mem"`
+	Network interface{} `json:"network"`
 }
 
 type MetricBatch struct {
@@ -46,7 +43,7 @@ func CreateNewMetricBatch() MetricBatch {
 	}
 }
 
-func (mb *MetricBatch) addMetricToBatch(incomingMetric MetricBufferUnitStructure) {
+func (mb *MetricBatch) AddMetricToBatch(incomingMetric MetricBufferUnitStructure) {
 	mb.BufferMutex.Lock()
 	defer mb.BufferMutex.Unlock()
 
@@ -55,31 +52,31 @@ func (mb *MetricBatch) addMetricToBatch(incomingMetric MetricBufferUnitStructure
 	if len(mb.Buffer) >= BATCH_SIZE {
 		// make an api call with expo backoff..
 		// go apiCall
+		client := client.CreateNewClient("k", "v")
+		extraHeaders := make(map[string]string)
+
+		payload := make(map[string]interface{})
+
+		for _, m := range mb.Buffer {
+			payload["cpu"] = m.CPU
+			payload["network"] = m.Network
+			payload["mem"] = m.Mem
+			payload["disk"] = m.Disk
+		}
+		fmt.Println(payload)
+		resp, err := client.RecvData.PushMetricsToServer(payload, extraHeaders)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(resp)
+		fmt.Println(len(mb.Buffer))
 		mb.Buffer = mb.Buffer[:0]
-	}
-}
-
-func (mb *MetricBatch) sendMetrics() {
-
-	send := func() error {
-
-		var buf bytes.Buffer
-
-		_ = json.NewEncoder(&buf).Encode(mb.Buffer)
-		// Will be doing an API call to my servers
-		return nil
-	}
-
-	expBackoff := backoff.NewExponentialBackOff()
-	expBackoff.MaxElapsedTime = 1 * time.Minute
-
-	if err := backoff.Retry(send, expBackoff); err != nil {
-		log.Fatalf(err.Error()) // do some nice logging
 	}
 }
 
 func (c *Canario) RunPeriodicMetrics() {
 	fmt.Println(c.cfg.Monitoring.IntervalSeconds)
+
 	ticker := time.NewTicker(time.Duration(c.cfg.Monitoring.IntervalSeconds) * time.Second)
 	defer ticker.Stop()
 
@@ -113,7 +110,7 @@ func (c *Canario) RunPeriodicMetrics() {
 			}
 		}
 		fmt.Println(thisMetric)
-		c.mb.addMetricToBatch(thisMetric)
+		c.mb.AddMetricToBatch(thisMetric)
 	}
 }
 
