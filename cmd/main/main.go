@@ -1,12 +1,9 @@
 package main
 
 import (
-	"github.com/zakhaev26/canario/pkg/canario"
+	"github.com/zakhaev26/canario/examples"
 )
 
 func main() {
-
-	cio := canario.NewCanario()
-	cio.RunPeriodicMetrics()
-
+	examples.MainMock()
 }
