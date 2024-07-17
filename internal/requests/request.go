@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -67,7 +68,7 @@ func (request *Request) AddRequestHeadersInternal(req *http.Request, headers map
 }
 
 func (request *Request) AddRequestHeaders(req *http.Request, headers map[string]string, contentType ...string) {
-	//Set the Defaults First in case unavailable
+
 	req.Header.Set("User-Agent", fmt.Sprintf("%s/%s", request.SDKName, request.Version))
 
 	if len(contentType) == 0 {
@@ -112,23 +113,23 @@ func ProcessResponse(response *http.Response) (map[string]interface{}, error) {
 }
 
 func (request *Request) APICall(req *http.Request) (map[string]interface{}, error) {
-
 	client := request.HTTPClient
 	resp, err := client.Do(req)
-
 	if err != nil {
+		log.Println("Error making HTTP request:", err)
 		return nil, err
 	}
+	defer resp.Body.Close()
 
-	if resp.StatusCode >= constants.HTTP_STATUS_OK &&
-		resp.StatusCode < constants.HTTP_STATUS_REDIRECT {
+	if resp.StatusCode >= constants.HTTP_STATUS_OK && resp.StatusCode < constants.HTTP_STATUS_REDIRECT {
 		return ProcessResponse(resp)
 	}
 
-	// resp is errorfull...
-
 	var jsonResp errors.CanarioErrorJSON
-	json.NewDecoder(resp.Body).Decode(&jsonResp)
+	if err := json.NewDecoder(resp.Body).Decode(&jsonResp); err != nil {
+		log.Println("Error decoding error response:", err)
+		return nil, err
+	}
 
 	errorData := jsonResp.ErrorData
 
@@ -142,6 +143,5 @@ func (request *Request) APICall(req *http.Request) (map[string]interface{}, erro
 		return nil, &errors.BadRequestError{Message: errorData.Description}
 	}
 
-	//extracting resp in a k-v pair map
 	return ProcessResponse(resp)
 }

@@ -13,6 +13,5 @@ type RecvData struct {
 
 func (recvData *RecvData) PushMetricsToServer(payload map[string]interface{}, extraHeaders map[string]string) (map[string]interface{}, error) {
 	url := fmt.Sprintf("/%s%s", constants.API_VERSION, constants.METRIC_COLLECTION_DEFAULT_ENDPOINT)
-
 	return recvData.Req.Post(url, payload, extraHeaders)
 }

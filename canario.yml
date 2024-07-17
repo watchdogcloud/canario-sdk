@@ -1,7 +1,8 @@
-version: 0.1.2
+version: 0.8.1
 
 api:
-  key: 'ey....'
+  baseuri: 'http://localhost:3030' 
+  key: '1bf42e28aa0ac838e47aabac10a4439567b289460bb784e57fc8304baf9ff095'
 
 metrics:
   cpu:
@@ -17,22 +18,19 @@ monitoring:
   interval_seconds: 1
   retention_hours: 24
 
-alerting:
-  enabled: true
-  thresholds:
-    cpu_usage_percentage:
-      warning: 80
-      critical: 90
-    memory_usage_percentage:
-      warning: 70
-      critical: 80
-    disk_usage_percentage:
-      warning: 75
-      critical: 85
-    network_traffic_threshold:
-      warning: 1000 
-      critical: 1500  
-  notification_channels:
-    emails:
-      - admin1@example.com
-      - admin2@example.com
+
+# will be released by v1...
+# alerting:
+  # thresholds:
+    # cpu_usage_percentage:
+  #     warning: 80
+  #     critical: 90
+  #   memory_usage_percentage:
+  #     warning: 70
+  #     critical: 80
+  #   disk_usage_percentage:
+  #     warning: 75
+  #     critical: 85
+  #   network_traffic_threshold:
+  #     warning: 1000 
+  #     critical: 1500

@@ -8,7 +8,8 @@ type Config struct {
 	Version string `yaml:"version"`
 
 	API struct {
-		Key string `yaml:"key"`
+		Key     string `yaml:"key"`
+		BaseURI string `yaml:"baseuri"`
 	} `yaml:"api"`
 
 	Metrics struct {

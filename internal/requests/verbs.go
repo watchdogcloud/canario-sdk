@@ -38,7 +38,8 @@ func (req *Request) Post(path string, payload map[string]interface{}, extraHeade
 
 	internalHeader := make(map[string]string)
 	internalHeader[req.Auth.K] = req.Auth.V
-	req.AddRequestHeadersInternal(_req, extraHeaders)
+
+	req.AddRequestHeadersInternal(_req, internalHeader)
 	req.AddRequestHeaders(_req, extraHeaders)
 
 	return req.APICall(_req)

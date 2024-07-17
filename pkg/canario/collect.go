@@ -2,6 +2,7 @@ package canario
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -34,12 +35,14 @@ type MetricBufferUnitStructure struct {
 type MetricBatch struct {
 	BufferMutex sync.Mutex
 	Buffer      []MetricBufferUnitStructure
+	Key         string
 }
 
 // constructer
-func CreateNewMetricBatch() MetricBatch {
+func CreateNewMetricBatch(apiKey string) MetricBatch {
 	return MetricBatch{
 		Buffer: make([]MetricBufferUnitStructure, 0),
+		Key:    apiKey,
 	}
 }
 
@@ -48,34 +51,35 @@ func (mb *MetricBatch) AddMetricToBatch(incomingMetric MetricBufferUnitStructure
 	defer mb.BufferMutex.Unlock()
 
 	mb.Buffer = append(mb.Buffer, incomingMetric)
-
 	if len(mb.Buffer) >= BATCH_SIZE {
-		// make an api call with expo backoff..
-		// go apiCall
-		client := client.CreateNewClient("k", "v")
-		extraHeaders := make(map[string]string)
-
-		payload := make(map[string]interface{})
-
-		for _, m := range mb.Buffer {
-			payload["cpu"] = m.CPU
-			payload["network"] = m.Network
-			payload["mem"] = m.Mem
-			payload["disk"] = m.Disk
-		}
-		fmt.Println(payload)
-		resp, err := client.RecvData.PushMetricsToServer(payload, extraHeaders)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(resp)
-		fmt.Println(len(mb.Buffer))
-		mb.Buffer = mb.Buffer[:0]
+		go mb.apiCall()
 	}
 }
 
+func (mb *MetricBatch) apiCall() {
+	mb.BufferMutex.Lock()
+	defer mb.BufferMutex.Unlock()
+
+	client := client.CreateNewClient("API-Key", mb.Key)
+	extraHeaders := make(map[string]string)
+
+	payload := make(map[string]interface{})
+	for _, m := range mb.Buffer {
+		payload["cpu"] = m.CPU
+		payload["network"] = m.Network
+		payload["mem"] = m.Mem
+		payload["disk"] = m.Disk
+	}
+
+	_, err := client.RecvData.PushMetricsToServer(payload, extraHeaders)
+	if err != nil {
+		log.Println("Error pushing metrics to server:", err)
+		return
+	}
+	mb.Buffer = mb.Buffer[:0]
+}
+
 func (c *Canario) RunPeriodicMetrics() {
-	fmt.Println(c.cfg.Monitoring.IntervalSeconds)
 
 	ticker := time.NewTicker(time.Duration(c.cfg.Monitoring.IntervalSeconds) * time.Second)
 	defer ticker.Stop()
@@ -109,7 +113,7 @@ func (c *Canario) RunPeriodicMetrics() {
 				thisMetric.Network = netMetrics
 			}
 		}
-		fmt.Println(thisMetric)
+
 		c.mb.AddMetricToBatch(thisMetric)
 	}
 }
@@ -118,7 +122,7 @@ func NewCanario() *Canario {
 	cfg := conf.CreateNewConf()
 	return &Canario{
 		cfg: &cfg,
-		mb:  CreateNewMetricBatch(),
+		mb:  CreateNewMetricBatch(cfg.API.Key),
 	}
 }
 

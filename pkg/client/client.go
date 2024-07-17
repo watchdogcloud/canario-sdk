@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/zakhaev26/canario/internal/constants"
+	"github.com/zakhaev26/canario/internal/conf"
 	"github.com/zakhaev26/canario/internal/requests"
 	"github.com/zakhaev26/canario/internal/resources"
 	"github.com/zakhaev26/canario/pkg/versioning"
@@ -31,7 +31,7 @@ func CreateNewClient(key string, secret string) *Client {
 		HTTPClient: &httpClient,
 		Version:    versioning.GetSDKVersion(),
 		SDKName:    versioning.GetSDKVersion(),
-		BASE_URI:   constants.BASE_URI,
+		BASE_URI:   conf.CreateNewConf().API.BaseURI,
 	}
 
 	recv_data := resources.RecvData{Req: Request}
