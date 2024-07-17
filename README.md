@@ -1,4 +1,8 @@
+<div align='center'>
+
 # Canario SDK
+
+</div>
 
 <div align='center'> 
 <img src=".github/logo.png" alt="canario.png" width='150'></img>
