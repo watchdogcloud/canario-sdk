@@ -1,6 +1,6 @@
 <div align='center'>
 
-# Canario SDK
+# Watchdog - Canario SDK
 
 </div>
 
