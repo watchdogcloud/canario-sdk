@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/watchdog/canario/examples"
-)
+import "github.com/watchdogcloud/canario/pkg/examples"
 
 func main() {
 	examples.MainMock()
